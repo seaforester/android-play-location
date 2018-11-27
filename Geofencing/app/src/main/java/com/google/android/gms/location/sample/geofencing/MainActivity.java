@@ -32,8 +32,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
@@ -93,10 +95,16 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+
         // Get the UI widgets.
         mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
         mRemoveGeofencesButton = (Button) findViewById(R.id.remove_geofences_button);
-
+        TextView textView = findViewById(R.id.textViewPS);
+        try {
+            textView.setText("PS: "+ getPackageManager().getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0 ).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<>();
 
@@ -214,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         } else {
             // Get the status code for the error and log it using a user-friendly message.
             String errorMessage = GeofenceErrorMessages.getErrorString(this, task.getException());
+            Toast.makeText(this,errorMessage,Toast.LENGTH_LONG).show();
             Log.w(TAG, errorMessage);
         }
     }
